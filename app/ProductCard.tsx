@@ -60,7 +60,6 @@ const ProductCard = ({
             { opacity: pressed ? 0.7 : 1 }
           ]}
           accessibilityLabel={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-          accessibilityRole="button"
         >
           <Ionicons
             name={isFavorite ? 'heart' : 'heart-outline'}
