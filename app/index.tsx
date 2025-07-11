@@ -175,11 +175,6 @@ export default function HomeScreen() {
         />
         
         <View style={styles.section}>
-          {/* <Header 
-            title="Furniture"
-            subtitle="Discover our collection"
-            onMenuPress={toggleMenu}
-          /> */}
           <Text style={styles.sectionTitle}>Trending Products</Text>
           <View style={styles.masonryContainer}>
             {columns.map((column, colIndex) => (
