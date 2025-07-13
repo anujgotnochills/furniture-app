@@ -11,11 +11,11 @@ import theme from './theme';
 // Sample data - replace with your actual data source
 const categories = [
   { id: 'all', icon: 'grid', label: 'All' },
-  { id: 'men', icon: 'chair', label: 'Men' },
-  { id: 'women', icon: 'table-furniture', label: 'Women' },
-  { id: 'shoes', icon: 'sofa', label: 'Shoes' },
-  { id: 'accessories', icon: 'lamp', label: 'Accessories' },
-  { id: 'accessories', icon: 'dots-horizontal', label: 'More' },
+  { id: 'men', icon: 'account', label: 'Men' },
+  { id: 'women', icon: 'account-outline', label: 'Women' },
+  { id: 'shoes', icon: 'shoe-sneaker', label: 'Shoes' },
+  { id: 'accessories', icon: 'bag-personal', label: 'Accessories' },
+  { id: 'more', icon: 'dots-horizontal', label: 'More' },
 ];
 
 // Sample product data with placeholder images and size information

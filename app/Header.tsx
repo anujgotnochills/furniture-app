@@ -31,7 +31,7 @@ const Header = ({
           activeOpacity={0.8}
         >
           <Ionicons 
-            name="cart-outline" 
+            name="bag-outline" 
             size={20} 
             color={theme.colors.white} 
           />

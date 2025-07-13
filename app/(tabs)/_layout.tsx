@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Chrome as Home, Grid3x3, Heart, User, ShoppingCart } from 'lucide-react-native';
+import { Home, Shirt, Heart, User, ShoppingCart } from 'lucide-react-native';
 import { View, StyleSheet } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { useCart } from '@/contexts/CartContext';
@@ -53,7 +53,7 @@ export default function TabLayout() {
         name="categories"
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon icon={Grid3x3} color={color} focused={focused} />
+            <TabBarIcon icon={Shirt} color={color} focused={focused} />
           ),
         }}
       />

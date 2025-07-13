@@ -29,37 +29,37 @@ const categories = [
     id: '1', 
     name: 'Men\'s Clothing', 
     count: 24, 
-    image: 'https://images.unsplash.com/photo-1516826957135-700dedea698c' 
+    image: 'https://images.unsplash.com/photo-1516826957135-700dedea698c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80' 
   },
   { 
     id: '2', 
     name: 'Women\'s Clothing', 
     count: 32, 
-    image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d' 
+    image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80' 
   },
   { 
     id: '3', 
     name: 'Shoes', 
     count: 18, 
-    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772' 
+    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80' 
   },
   { 
     id: '4', 
     name: 'Accessories', 
     count: 15, 
-    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62' 
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80' 
   },
   { 
     id: '5', 
     name: 'Bags', 
     count: 12, 
-    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62' 
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80' 
   },
   { 
     id: '6', 
     name: 'Jewelry', 
     count: 28, 
-    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338' 
+    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80' 
   },
 ];
 

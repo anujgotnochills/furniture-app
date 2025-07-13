@@ -57,7 +57,7 @@ const TabBar = ({ onSearchPress }: TabBarProps) => {
   const activeTab = route.split('/')[0];
   const tabs = [
     { id: 'home', icon: 'home-outline', label: 'Home', isSearch: false },
-    { id: 'categories', icon: 'grid-outline', label: 'Categories', isSearch: false },
+    { id: 'categories', icon: 'shirt-outline', label: 'Categories', isSearch: false },
     { id: 'search', icon: 'search', label: 'Search', isSearch: true },
     { id: 'wishlist', icon: 'heart-outline', label: 'Wishlist', isSearch: false },
     { id: 'profile', icon: 'person-outline', label: 'Profile', isSearch: false },

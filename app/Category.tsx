@@ -20,10 +20,10 @@ const Category = ({
   const getIconName = (iconName: string) => {
     const iconMap: Record<string, string> = {
       'grid': 'grid',
-      'chair': 'chair-rolling',
-      'table-furniture': 'table-furniture',
-      'sofa': 'sofa',
-      'lamp': 'lamp',
+      'account': 'account',
+      'account-outline': 'account-outline', 
+      'shoe-sneaker': 'shoe-sneaker',
+      'bag-personal': 'bag-personal',
       'dots-horizontal': 'dots-horizontal',
     };
     return iconMap[iconName] || 'help-circle';
