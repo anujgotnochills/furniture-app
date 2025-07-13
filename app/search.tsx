@@ -19,7 +19,7 @@ export default function SearchScreen() {
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       {/* Search Bar */}
       <TextInput 
-        placeholder="Search furniture..."
+        placeholder="Search clothing..."
         style={{
           margin: 16,
           padding: 12,

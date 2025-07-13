@@ -27,39 +27,39 @@ type Category = {
 const categories = [
   { 
     id: '1', 
-    name: 'Sofas', 
+    name: 'Men\'s Clothing', 
     count: 24, 
-    image: 'https://images.unsplash.com/photo-1555041463-a27bce3118fc' 
+    image: 'https://images.unsplash.com/photo-1516826957135-700dedea698c' 
   },
   { 
     id: '2', 
-    name: 'Chairs', 
+    name: 'Women\'s Clothing', 
     count: 32, 
-    image: 'https://images.unsplash.com/photo-1503602642458-2321115e8f1e' 
+    image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d' 
   },
   { 
     id: '3', 
-    name: 'Beds', 
+    name: 'Shoes', 
     count: 18, 
-    image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85' 
+    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772' 
   },
   { 
     id: '4', 
-    name: 'Tables', 
+    name: 'Accessories', 
     count: 15, 
-    image: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c' 
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62' 
   },
   { 
     id: '5', 
-    name: 'Wardrobes', 
+    name: 'Bags', 
     count: 12, 
-    image: 'https://images.unsplash.com/photo-1584622650111-993f4269d10f' 
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62' 
   },
   { 
     id: '6', 
-    name: 'Lamps', 
+    name: 'Jewelry', 
     count: 28, 
-    image: 'https://images.unsplash.com/photo-1526170375885-4edd8febfcfb' 
+    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338' 
   },
 ];
 

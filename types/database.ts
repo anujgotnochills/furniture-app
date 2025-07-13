@@ -11,6 +11,9 @@ export interface Database {
           category: string;
           rating: number;
           in_stock: boolean;
+          size?: string;
+          color?: string;
+          brand?: string;
           created_at: string;
         };
         Insert: {
@@ -22,6 +25,9 @@ export interface Database {
           category: string;
           rating?: number;
           in_stock?: boolean;
+          size?: string;
+          color?: string;
+          brand?: string;
           created_at?: string;
         };
         Update: {
@@ -33,6 +39,9 @@ export interface Database {
           category?: string;
           rating?: number;
           in_stock?: boolean;
+          size?: string;
+          color?: string;
+          brand?: string;
           created_at?: string;
         };
       };

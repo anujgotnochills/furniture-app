@@ -47,7 +47,7 @@ export default function CartScreen() {
         </View>
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyTitle}>Your cart is empty</Text>
-          <Text style={styles.emptySubtitle}>Add some furniture to get started</Text>
+          <Text style={styles.emptySubtitle}>Add some clothing to get started</Text>
           <TouchableOpacity
             style={styles.shopButton}
             onPress={() => router.push('/categories')}

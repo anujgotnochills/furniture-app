@@ -23,12 +23,12 @@ export default function WishlistScreen() {
     <View style={styles.emptyContainer}>
       <Heart size={48} color={theme.colors.textLight} />
       <Text style={styles.emptyTitle}>Your wishlist is empty</Text>
-      <Text style={styles.emptyText}>Save items you love to your wishlist</Text>
+      <Text style={styles.emptyText}>Save fashion items you love to your wishlist</Text>
       <TouchableOpacity 
         style={styles.browseButton}
         onPress={() => router.push('/')}
       >
-        <Text style={styles.browseButtonText}>Browse Products</Text>
+        <Text style={styles.browseButtonText}>Browse Fashion</Text>
       </TouchableOpacity>
     </View>
   );

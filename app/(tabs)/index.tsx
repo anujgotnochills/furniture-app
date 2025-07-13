@@ -21,10 +21,10 @@ type Product = Database['public']['Tables']['products']['Row'];
 const { width: screenWidth } = Dimensions.get('window');
 
 const categories = [
-  { id: 'chairs', name: 'Chairs', icon: '🪑' },
-  { id: 'tables', name: 'Tables', icon: '🪑' },
-  { id: 'lamps', name: 'Lamps', icon: '💡' },
-  { id: 'decor', name: 'Decor', icon: '🏺' },
+  { id: 'men', name: 'Men', icon: '👔' },
+  { id: 'women', name: 'Women', icon: '👗' },
+  { id: 'shoes', name: 'Shoes', icon: '👟' },
+  { id: 'accessories', name: 'Accessories', icon: '👜' },
 ];
 
 export default function HomeScreen() {
@@ -76,9 +76,9 @@ export default function HomeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>Good Morning</Text>
-            <Text style={styles.title}>Casa</Text>
-            <Text style={styles.subtitle}>Beautiful furniture for your home</Text>
+            <Text style={styles.greeting}>Welcome Back</Text>
+            <Text style={styles.title}>StyleHub</Text>
+            <Text style={styles.subtitle}>Discover your perfect style</Text>
           </View>
           <TouchableOpacity style={styles.notificationButton}>
             <Bell size={20} color="#2D1B16" strokeWidth={2} />
@@ -89,7 +89,7 @@ export default function HomeScreen() {
         {/* Search Bar */}
         <BlurView intensity={20} style={styles.searchContainer}>
           <Search size={18} color="#8B7355" strokeWidth={2} />
-          <Text style={styles.searchPlaceholder}>Search furniture...</Text>
+          <Text style={styles.searchPlaceholder}>Search clothing...</Text>
         </BlurView>
 
         {/* Categories */}

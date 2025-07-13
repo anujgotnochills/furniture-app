@@ -11,10 +11,10 @@ import theme from './theme';
 // Sample data - replace with your actual data source
 const categories = [
   { id: 'all', icon: 'grid', label: 'All' },
-  { id: 'chairs', icon: 'chair', label: 'Chairs' },
-  { id: 'tables', icon: 'table-furniture', label: 'Tables' },
-  { id: 'sofas', icon: 'sofa', label: 'Sofas' },
-  { id: 'lamps', icon: 'lamp', label: 'Lamps' },
+  { id: 'men', icon: 'chair', label: 'Men' },
+  { id: 'women', icon: 'table-furniture', label: 'Women' },
+  { id: 'shoes', icon: 'sofa', label: 'Shoes' },
+  { id: 'accessories', icon: 'lamp', label: 'Accessories' },
   { id: 'accessories', icon: 'dots-horizontal', label: 'More' },
 ];
 
@@ -22,57 +22,57 @@ const categories = [
 const products = [
   {
     id: '1',
-    name: 'Minimalist Chair',
-    price: 249.99,
+    name: 'Classic T-Shirt',
+    price: 29.99,
     image: null,
     size: 'large' as const,  // This will be a large card
   },
   {
     id: '2',
-    name: 'Modern Table Lamp',
-    price: 89.99,
+    name: 'Denim Jeans',
+    price: 79.99,
     image: null,
     size: 'small' as const,  // This will be a small card
   },
   {
     id: '3',
-    name: 'Wooden Coffee Table',
-    price: 349.99,
+    name: 'Summer Dress',
+    price: 89.99,
     image: null,
     size: 'small' as const,  // This will be a small card
   },
   {
     id: '4',
-    name: 'Leather Sofa',
-    price: 1299.99,
+    name: 'Leather Jacket',
+    price: 199.99,
     image: null,
     size: 'large' as const,  // This will be a large card
   },
   {
     id: '5',
-    name: 'Floor Lamp',
-    price: 179.99,
+    name: 'Sneakers',
+    price: 129.99,
     image: null,
     size: 'small' as const,  // This will be a small card
   },
   {
     id: '6',
-    name: 'Bookshelf',
-    price: 289.99,
+    name: 'Handbag',
+    price: 149.99,
     image: null,
     size: 'small' as const,  // This will be a small card
   },
   {
     id: '7',
-    name: 'Dining Table Set',
-    price: 899.99,
+    name: 'Winter Coat',
+    price: 249.99,
     image: null,
     size: 'large' as const,  // This will be a large card
   },
   {
     id: '8',
-    name: 'Accent Chair',
-    price: 199.99,
+    name: 'Casual Shirt',
+    price: 49.99,
     image: null,
     size: 'small' as const,  // This will be a small card
   },
@@ -159,8 +159,8 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Header 
-        title="Modern Furniture"
-        subtitle="Discover the perfect pieces for your home"
+        title="StyleHub Fashion"
+        subtitle="Discover your perfect style"
         onMenuPress={toggleMenu}
         onCartPress={() => console.log('Cart pressed')}
       />
@@ -175,7 +175,7 @@ export default function HomeScreen() {
         />
         
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Trending Products</Text>
+          <Text style={styles.sectionTitle}>Trending Fashion</Text>
           <View style={styles.masonryContainer}>
             {columns.map((column, colIndex) => (
               <View key={`column-${colIndex}`} style={styles.column}>

@@ -21,10 +21,10 @@ const { width: screenWidth } = Dimensions.get('window');
 
 const categories = [
   { id: 'all', name: 'All' },
-  { id: 'chairs', name: 'Chairs' },
-  { id: 'tables', name: 'Tables' },
-  { id: 'lamps', name: 'Lamps' },
-  { id: 'decor', name: 'Decor' },
+  { id: 'men', name: 'Men' },
+  { id: 'women', name: 'Women' },
+  { id: 'shoes', name: 'Shoes' },
+  { id: 'accessories', name: 'Accessories' },
 ];
 
 export default function CategoriesScreen() {

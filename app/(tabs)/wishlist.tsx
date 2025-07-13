@@ -53,7 +53,7 @@ export default function WishlistScreen() {
         <View style={styles.emptyContainer}>
           <Heart size={64} color="#8B7355" strokeWidth={1} />
           <Text style={styles.emptyTitle}>Your wishlist is empty</Text>
-          <Text style={styles.emptySubtitle}>Save items you love to find them later</Text>
+          <Text style={styles.emptySubtitle}>Save styles you love to find them later</Text>
           <TouchableOpacity
             style={styles.shopButton}
             onPress={() => router.push('/categories')}

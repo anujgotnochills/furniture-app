@@ -28,43 +28,43 @@ const SORT_OPTIONS: SortOption[] = [
 const CATEGORIES: Category[] = [
   {
     id: '1',
-    name: 'Living Room',
-    icon: 'weekend',
+    name: 'Men\'s Clothing',
+    icon: 'checkroom',
     children: [
-      { id: '1-1', name: 'Sofas', icon: 'weekend' },
-      { id: '1-2', name: 'Sectionals', icon: 'weekend' },
-      { id: '1-3', name: 'Loveseats', icon: 'weekend' },
-      { id: '1-4', name: 'Coffee Tables', icon: 'coffee' },
+      { id: '1-1', name: 'T-Shirts', icon: 'checkroom' },
+      { id: '1-2', name: 'Shirts', icon: 'checkroom' },
+      { id: '1-3', name: 'Jeans', icon: 'checkroom' },
+      { id: '1-4', name: 'Jackets', icon: 'checkroom' },
     ],
   },
   {
     id: '2',
-    name: 'Bedroom',
-    icon: 'king-bed',
+    name: 'Women\'s Clothing',
+    icon: 'checkroom',
     children: [
-      { id: '2-1', name: 'Beds', icon: 'king-bed' },
-      { id: '2-2', name: 'Dressers', icon: 'dresser' },
-      { id: '2-3', name: 'Nightstands', icon: 'night-shelves' },
+      { id: '2-1', name: 'Dresses', icon: 'checkroom' },
+      { id: '2-2', name: 'Tops', icon: 'checkroom' },
+      { id: '2-3', name: 'Skirts', icon: 'checkroom' },
     ],
   },
   {
     id: '3',
-    name: 'Dining',
-    icon: 'dining',
+    name: 'Footwear',
+    icon: 'sports-tennis',
     children: [
-      { id: '3-1', name: 'Dining Tables', icon: 'dining' },
-      { id: '3-2', name: 'Dining Chairs', icon: 'chair' },
-      { id: '3-3', name: 'Bar Stools', icon: 'chair-rolling' },
+      { id: '3-1', name: 'Sneakers', icon: 'sports-tennis' },
+      { id: '3-2', name: 'Boots', icon: 'sports-tennis' },
+      { id: '3-3', name: 'Sandals', icon: 'sports-tennis' },
     ],
   },
   {
     id: '4',
-    name: 'Office',
-    icon: 'work',
+    name: 'Accessories',
+    icon: 'shopping-bag',
     children: [
-      { id: '4-1', name: 'Desks', icon: 'desk' },
-      { id: '4-2', name: 'Office Chairs', icon: 'chair' },
-      { id: '4-3', name: 'Bookshelves', icon: 'menu-book' },
+      { id: '4-1', name: 'Bags', icon: 'shopping-bag' },
+      { id: '4-2', name: 'Watches', icon: 'watch' },
+      { id: '4-3', name: 'Jewelry', icon: 'diamond' },
     ],
   },
 ];
@@ -115,7 +115,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
           <MaterialIcons name="search" size={20} color={theme.colors.textLight} style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search products..."
+            placeholder="Search clothing..."
             placeholderTextColor={theme.colors.textLight}
             value={searchQuery}
             onChangeText={setSearchQuery}
