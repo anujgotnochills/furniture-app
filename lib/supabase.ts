@@ -27,17 +27,52 @@ const createMockClient = () => {
   
   return {
     auth: {
-      signUp: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
-      signInWithPassword: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
+      signUp: () => Promise.resolve({ 
+        data: { user: { id: 'mock-user', email: 'test@example.com' }, session: null }, 
+        error: null 
+      }),
+      signInWithPassword: () => Promise.resolve({ 
+        data: { user: { id: 'mock-user', email: 'test@example.com' }, session: { user: { id: 'mock-user', email: 'test@example.com' } } }, 
+        error: null 
+      }),
       signOut: () => Promise.resolve({ error: null }),
-      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+      getSession: () => Promise.resolve({ 
+        data: { session: { user: { id: 'mock-user', email: 'test@example.com' } } }, 
+        error: null 
+      }),
+      onAuthStateChange: (callback: any) => {
+        // Simulate auth state change for development
+        setTimeout(() => {
+          callback('SIGNED_IN', { user: { id: 'mock-user', email: 'test@example.com' } });
+        }, 100);
+        return { data: { subscription: { unsubscribe: () => {} } } };
+      },
+      resetPasswordForEmail: () => Promise.resolve({ error: null }),
     },
     from: () => ({
-      select: () => Promise.resolve({ data: [], error: null }),
-      insert: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
-      update: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
-      delete: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
+      select: () => ({
+        eq: () => ({
+          limit: () => Promise.resolve({ 
+            data: [
+              {
+                id: '1',
+                name: 'Classic T-Shirt',
+                description: 'Comfortable cotton t-shirt',
+                price: 29.99,
+                image_url: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400',
+                category: 'men',
+                rating: 4.5,
+                in_stock: true,
+                created_at: new Date().toISOString()
+              }
+            ], 
+            error: null 
+          })
+        })
+      }),
+      insert: () => Promise.resolve({ data: null, error: null }),
+      update: () => Promise.resolve({ data: null, error: null }),
+      delete: () => Promise.resolve({ data: null, error: null }),
     }),
   } as any;
 };

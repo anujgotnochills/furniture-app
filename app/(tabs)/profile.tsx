@@ -44,8 +44,12 @@ export default function ProfileScreen() {
   }
 
   const handleSignOut = async () => {
-    await signOut();
-    router.replace('/');
+    try {
+      await signOut();
+      router.replace('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   return (

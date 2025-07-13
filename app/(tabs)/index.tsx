@@ -57,7 +57,7 @@ export default function HomeScreen() {
     return (
       <LinearGradient colors={['#F5E6D3', '#E8D5C4']} style={styles.container}>
         <View style={styles.authPrompt}>
-          <Text style={styles.authTitle}>Welcome to Casa</Text>
+          <Text style={styles.authTitle}>Welcome to StyleHub</Text>
           <Text style={styles.authSubtitle}>Please sign in to continue</Text>
           <TouchableOpacity
             style={styles.authButton}

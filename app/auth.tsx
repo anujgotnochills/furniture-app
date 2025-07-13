@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
@@ -16,17 +17,38 @@ import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function AuthScreen() {
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, resetPassword, loading } = useAuth();
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isResetPassword, setIsResetPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    return password.length >= 6;
+  };
 
   const handleAuth = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      Alert.alert('Error', 'Password must be at least 6 characters long');
       return;
     }
 
@@ -35,22 +57,86 @@ export default function AuthScreen() {
       return;
     }
 
-    setLoading(true);
+    setAuthLoading(true);
     try {
       const { error } = isSignUp 
         ? await signUp(email, password)
         : await signIn(email, password);
 
       if (error) {
-        Alert.alert('Error', error.message);
+        let errorMessage = error.message;
+        
+        // Provide user-friendly error messages
+        if (error.message.includes('Invalid login credentials')) {
+          errorMessage = 'Invalid email or password. Please try again.';
+        } else if (error.message.includes('User already registered')) {
+          errorMessage = 'An account with this email already exists. Please sign in instead.';
+        } else if (error.message.includes('Email not confirmed')) {
+          errorMessage = 'Please check your email and confirm your account before signing in.';
+        }
+        
+        Alert.alert('Authentication Error', errorMessage);
       } else {
-        router.replace('/');
+        if (isSignUp) {
+          Alert.alert(
+            'Account Created!', 
+            'Please check your email to verify your account before signing in.',
+            [{ text: 'OK', onPress: () => setIsSignUp(false) }]
+          );
+        } else {
+          router.replace('/');
+        }
       }
     } catch (error) {
       Alert.alert('Error', 'Something went wrong');
     } finally {
-      setLoading(false);
+      setAuthLoading(false);
     }
+  };
+
+  const handleResetPassword = async () => {
+    if (!email) {
+      Alert.alert('Error', 'Please enter your email address');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return;
+    }
+
+    setAuthLoading(true);
+    try {
+      const { error } = await resetPassword(email);
+      
+      if (error) {
+        Alert.alert('Error', error.message);
+      } else {
+        Alert.alert(
+          'Reset Email Sent',
+          'Please check your email for password reset instructions.',
+          [{ text: 'OK', onPress: () => setIsResetPassword(false) }]
+        );
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+  };
+
+  const switchMode = (mode: 'signin' | 'signup' | 'reset') => {
+    resetForm();
+    setIsSignUp(mode === 'signup');
+    setIsResetPassword(mode === 'reset');
   };
 
   return (
@@ -70,10 +156,17 @@ export default function AuthScreen() {
         <View style={styles.formContainer}>
           <BlurView intensity={60} style={styles.formCard}>
             <Text style={styles.title}>
-              {isSignUp ? 'Create Account' : 'Welcome Back'}
+              {isResetPassword 
+                ? 'Reset Password' 
+                : isSignUp 
+                ? 'Create Account' 
+                : 'Welcome Back'
+              }
             </Text>
             <Text style={styles.subtitle}>
-              {isSignUp 
+              {isResetPassword
+                ? 'Enter your email to receive reset instructions'
+                : isSignUp 
                 ? 'Sign up to start shopping for amazing fashion' 
                 : 'Sign in to your StyleHub account'
               }
@@ -89,67 +182,125 @@ export default function AuthScreen() {
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                autoComplete="email"
+                editable={!authLoading}
               />
             </View>
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Password</Text>
-              <View style={styles.passwordContainer}>
-                <TextInput
-                  style={styles.passwordInput}
-                  placeholder="Enter your password"
-                  placeholderTextColor="#8B7355"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                />
-                <TouchableOpacity
-                  style={styles.eyeButton}
-                  onPress={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff size={20} color="#8B7355" strokeWidth={2} />
-                  ) : (
-                    <Eye size={20} color="#8B7355" strokeWidth={2} />
-                  )}
-                </TouchableOpacity>
+            {!isResetPassword && (
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Password</Text>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Enter your password"
+                    placeholderTextColor="#8B7355"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!showPassword}
+                    autoComplete="password"
+                    editable={!authLoading}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeButton}
+                    onPress={() => setShowPassword(!showPassword)}
+                    disabled={authLoading}
+                  >
+                    {showPassword ? (
+                      <EyeOff size={20} color="#8B7355" strokeWidth={2} />
+                    ) : (
+                      <Eye size={20} color="#8B7355" strokeWidth={2} />
+                    )}
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
+            )}
 
             {isSignUp && (
               <View style={styles.inputContainer}>
                 <Text style={styles.inputLabel}>Confirm Password</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Confirm your password"
-                  placeholderTextColor="#8B7355"
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  secureTextEntry={true}
-                />
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Confirm your password"
+                    placeholderTextColor="#8B7355"
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    secureTextEntry={!showConfirmPassword}
+                    autoComplete="password"
+                    editable={!authLoading}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeButton}
+                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                    disabled={authLoading}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff size={20} color="#8B7355" strokeWidth={2} />
+                    ) : (
+                      <Eye size={20} color="#8B7355" strokeWidth={2} />
+                    )}
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
 
             <TouchableOpacity
-              style={[styles.authButton, loading && styles.authButtonDisabled]}
-              onPress={handleAuth}
-              disabled={loading}
+              style={[styles.authButton, (authLoading || loading) && styles.authButtonDisabled]}
+              onPress={isResetPassword ? handleResetPassword : handleAuth}
+              disabled={authLoading || loading}
             >
-              <Text style={styles.authButtonText}>
-                {loading ? 'Loading...' : (isSignUp ? 'Sign Up' : 'Sign In')}
-              </Text>
+              {(authLoading || loading) ? (
+                <ActivityIndicator color="#FFFFFF" size="small" />
+              ) : (
+                <Text style={styles.authButtonText}>
+                  {isResetPassword 
+                    ? 'Send Reset Email' 
+                    : isSignUp 
+                    ? 'Sign Up' 
+                    : 'Sign In'
+                  }
+                </Text>
+              )}
             </TouchableOpacity>
 
-            <View style={styles.switchContainer}>
-              <Text style={styles.switchText}>
-                {isSignUp ? 'Already have an account?' : "Don't have an account?"}
-              </Text>
-              <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
-                <Text style={styles.switchButton}>
-                  {isSignUp ? 'Sign In' : 'Sign Up'}
-                </Text>
-              </TouchableOpacity>
-            </View>
+            {!isResetPassword && (
+              <>
+                <TouchableOpacity 
+                  style={styles.forgotPasswordButton}
+                  onPress={() => switchMode('reset')}
+                  disabled={authLoading || loading}
+                >
+                  <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                </TouchableOpacity>
+
+                <View style={styles.switchContainer}>
+                  <Text style={styles.switchText}>
+                    {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+                  </Text>
+                  <TouchableOpacity 
+                    onPress={() => switchMode(isSignUp ? 'signin' : 'signup')}
+                    disabled={authLoading || loading}
+                  >
+                    <Text style={styles.switchButton}>
+                      {isSignUp ? 'Sign In' : 'Sign Up'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+
+            {isResetPassword && (
+              <View style={styles.switchContainer}>
+                <Text style={styles.switchText}>Remember your password?</Text>
+                <TouchableOpacity 
+                  onPress={() => switchMode('signin')}
+                  disabled={authLoading || loading}
+                >
+                  <Text style={styles.switchButton}>Sign In</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </BlurView>
         </View>
       </KeyboardAvoidingView>
@@ -256,6 +407,15 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  forgotPasswordButton: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  forgotPasswordText: {
+    fontSize: 14,
+    color: '#8B7355',
+    textDecorationLine: 'underline',
   },
   switchContainer: {
     flexDirection: 'row',
