@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { User, Session } from '@supabase/supabase-js';
 
@@ -18,47 +18,69 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
+    isMountedRef.current = true;
+    
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setSession(session);
-      setLoading(false);
+      if (isMountedRef.current) {
+        setUser(session?.user ?? null);
+        setSession(session);
+        setLoading(false);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      setSession(session);
-      setLoading(false);
+      if (isMountedRef.current) {
+        setUser(session?.user ?? null);
+        setSession(session);
+        setLoading(false);
+      }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMountedRef.current = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    setLoading(true);
+    if (isMountedRef.current) {
+      setLoading(true);
+    }
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    setLoading(false);
+    if (isMountedRef.current) {
+      setLoading(false);
+    }
     return { error };
   };
 
   const signUp = async (email: string, password: string) => {
-    setLoading(true);
+    if (isMountedRef.current) {
+      setLoading(true);
+    }
     const { error } = await supabase.auth.signUp({
       email,
       password,
     });
-    setLoading(false);
+    if (isMountedRef.current) {
+      setLoading(false);
+    }
     return { error };
   };
 
   const signOut = async () => {
-    setLoading(true);
+    if (isMountedRef.current) {
+      setLoading(true);
+    }
     await supabase.auth.signOut();
-    setLoading(false);
+    if (isMountedRef.current) {
+      setLoading(false);
+    }
   };
 
   const resetPassword = async (email: string) => {

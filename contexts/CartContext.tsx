@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from './AuthContext';
 import { Database } from '@/types/database';
@@ -25,14 +25,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const isMountedRef = useRef(true);
 
   const fetchCartItems = async () => {
     if (!user) {
-      setItems([]);
+      if (isMountedRef.current) {
+        setItems([]);
+      }
       return;
     }
 
-    setLoading(true);
+    if (isMountedRef.current) {
+      setLoading(true);
+    }
     try {
       const { data, error } = await supabase
         .from('cart_items')
@@ -43,16 +48,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         .eq('user_id', user.id);
 
       if (error) throw error;
-      setItems(data || []);
+      if (isMountedRef.current) {
+        setItems(data || []);
+      }
     } catch (error) {
       console.error('Error fetching cart items:', error);
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
   };
 
   useEffect(() => {
+    isMountedRef.current = true;
     fetchCartItems();
+    
+    return () => {
+      isMountedRef.current = false;
+    };
   }, [user]);
 
   const addToCart = async (productId: string) => {

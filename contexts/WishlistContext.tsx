@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from './AuthContext';
 import { Database } from '@/types/database';
@@ -23,14 +23,19 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const isMountedRef = useRef(true);
 
   const fetchWishlistItems = async () => {
     if (!user) {
-      setItems([]);
+      if (isMountedRef.current) {
+        setItems([]);
+      }
       return;
     }
 
-    setLoading(true);
+    if (isMountedRef.current) {
+      setLoading(true);
+    }
     try {
       const { data, error } = await supabase
         .from('wishlist_items')
@@ -41,16 +46,25 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
         .eq('user_id', user.id);
 
       if (error) throw error;
-      setItems(data || []);
+      if (isMountedRef.current) {
+        setItems(data || []);
+      }
     } catch (error) {
       console.error('Error fetching wishlist items:', error);
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
   };
 
   useEffect(() => {
+    isMountedRef.current = true;
     fetchWishlistItems();
+    
+    return () => {
+      isMountedRef.current = false;
+    };
   }, [user]);
 
   const addToWishlist = async (productId: string) => {
