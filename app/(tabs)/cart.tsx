@@ -19,20 +19,8 @@ export default function CartScreen() {
   const { items, loading, removeFromCart, updateQuantity, getTotalPrice } = useCart();
 
   if (!user) {
-    return (
-      <LinearGradient colors={['#F5E6D3', '#E8D5C4']} style={styles.container}>
-        <View style={styles.authPrompt}>
-          <Text style={styles.authTitle}>Sign in Required</Text>
-          <Text style={styles.authSubtitle}>Please sign in to view your cart</Text>
-          <TouchableOpacity
-            style={styles.authButton}
-            onPress={() => router.push('/auth')}
-          >
-            <Text style={styles.authButtonText}>Sign In</Text>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
-    );
+    router.replace('/auth');
+    return null;
   }
 
   if (items.length === 0) {

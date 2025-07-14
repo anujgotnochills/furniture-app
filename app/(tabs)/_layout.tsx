@@ -1,4 +1,7 @@
 import { Tabs } from 'expo-router';
+import { useAuth } from '@/contexts/AuthContext';
+import { router } from 'expo-router';
+import { useEffect } from 'react';
 import { Chrome as Home, Shirt, Heart, User, ShoppingCart } from 'lucide-react-native';
 import { View, StyleSheet } from 'react-native';
 import { BlurView } from 'expo-blur';
@@ -29,6 +32,16 @@ function CartTabBarIcon({ color, focused }: { color: string; focused: boolean })
 }
 
 export default function TabLayout() {
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace('/auth');
+    }
+  }, [user, loading]);
+
+  if (!user) return null;
+
   return (
     <Tabs
       screenOptions={{

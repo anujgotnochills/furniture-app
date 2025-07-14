@@ -80,11 +80,11 @@ export default function AuthScreen() {
         if (isSignUp) {
           Alert.alert(
             'Account Created!', 
-            'Please check your email to verify your account before signing in.',
-            [{ text: 'OK', onPress: () => setIsSignUp(false) }]
+            'Welcome to StyleHub! You can now start shopping.',
+            [{ text: 'OK', onPress: () => router.replace('/(tabs)') }]
           );
         } else {
-          router.replace('/');
+          router.replace('/(tabs)');
         }
       }
     } catch (error) {

@@ -36,6 +36,12 @@ export default function HomeScreen() {
     fetchFeaturedProducts();
   }, []);
 
+  useEffect(() => {
+    if (!user) {
+      router.replace('/auth');
+    }
+  }, [user]);
+
   const fetchFeaturedProducts = async () => {
     try {
       const { data, error } = await supabase
@@ -52,23 +58,6 @@ export default function HomeScreen() {
       setLoading(false);
     }
   };
-
-  if (!user) {
-    return (
-      <LinearGradient colors={['#F5E6D3', '#E8D5C4']} style={styles.container}>
-        <View style={styles.authPrompt}>
-          <Text style={styles.authTitle}>Welcome to StyleHub</Text>
-          <Text style={styles.authSubtitle}>Please sign in to continue</Text>
-          <TouchableOpacity
-            style={styles.authButton}
-            onPress={() => router.push('/auth')}
-          >
-            <Text style={styles.authButtonText}>Sign In</Text>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
-    );
-  }
 
   return (
     <LinearGradient colors={['#F5E6D3', '#E8D5C4']} style={styles.container}>
@@ -305,34 +294,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#2D1B16',
-  },
-  authPrompt: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 40,
-  },
-  authTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#2D1B16',
-    marginBottom: 8,
-  },
-  authSubtitle: {
-    fontSize: 16,
-    color: '#8B7355',
-    marginBottom: 32,
-    textAlign: 'center',
-  },
-  authButton: {
-    backgroundColor: '#2D1B16',
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 25,
-  },
-  authButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });
