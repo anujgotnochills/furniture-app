@@ -103,7 +103,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email: email.trim().toLowerCase(),
         password,
         options: {
-          emailRedirectTo: undefined, // Disable email confirmation for now
+          emailRedirectTo: undefined,
+          data: {
+            email_confirm: false
+          }
         }
       });
 
@@ -113,6 +116,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       console.log('Sign up successful:', data.user?.email);
+      
+      // If user is created but not confirmed, try to sign them in directly
+      if (data.user && !data.session) {
+        console.log('User created but not confirmed, attempting direct sign in...');
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email: email.trim().toLowerCase(),
+          password,
+        });
+        
+        if (signInError) {
+          console.error('Auto sign in after signup failed:', signInError);
+          return { error: signInError };
+        }
+        
+        console.log('Auto sign in successful after signup');
+      }
+      
       return { error: null };
     } catch (error) {
       console.error('Sign up exception:', error);

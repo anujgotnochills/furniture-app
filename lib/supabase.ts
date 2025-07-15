@@ -15,7 +15,10 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,
-    flowType: 'pkce'
+    flowType: 'pkce',
+    // Disable email confirmation for development
+    confirmationUrl: undefined,
+    emailRedirectTo: undefined
   },
   global: {
     headers: {

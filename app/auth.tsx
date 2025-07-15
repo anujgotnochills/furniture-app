@@ -71,22 +71,24 @@ export default function AuthScreen() {
         // Handle common Supabase errors
         if (error.message?.includes('Invalid login credentials')) {
           errorMessage = 'Invalid email or password. Please try again.';
+        } else if (error.message?.includes('Email not confirmed')) {
+          errorMessage = 'Please check your email and click the confirmation link, or try signing up again.';
         } else if (error.message?.includes('User already registered')) {
           errorMessage = 'An account with this email already exists. Please sign in instead.';
-        } else if (error.message?.includes('Email not confirmed')) {
-          errorMessage = 'Please check your email and confirm your account before signing in.';
         } else if (error.message?.includes('Too many requests')) {
           errorMessage = 'Too many attempts. Please wait a moment and try again.';
         } else if (error.message?.includes('signup is disabled')) {
           errorMessage = 'Account creation is currently disabled. Please contact support.';
+        } else if (error.message?.includes('User not found')) {
+          errorMessage = 'No account found with this email. Please sign up first.';
         }
         
         Alert.alert('Authentication Error', errorMessage);
       } else {
         if (isSignUp) {
           Alert.alert(
-            'Account Created!', 
-            'Welcome to StyleHub! You can now start shopping.',
+            'Welcome to StyleHub!', 
+            'Your account has been created successfully. You can now start shopping.',
             [{ text: 'OK', onPress: () => router.replace('/(tabs)') }]
           );
         } else {
