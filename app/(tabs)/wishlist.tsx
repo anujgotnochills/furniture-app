@@ -23,11 +23,6 @@ export default function WishlistScreen() {
   const { items, removeFromWishlist } = useWishlist();
   const { addToCart } = useCart();
 
-  if (!user) {
-    router.replace('/auth');
-    return null;
-  }
-
   if (items.length === 0) {
     return (
       <LinearGradient colors={['#F5E6D3', '#E8D5C4']} style={styles.container}>

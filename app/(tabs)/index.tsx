@@ -36,12 +36,6 @@ export default function HomeScreen() {
     fetchFeaturedProducts();
   }, []);
 
-  useEffect(() => {
-    if (!user) {
-      router.replace('/auth');
-    }
-  }, [user]);
-
   const fetchFeaturedProducts = async () => {
     try {
       const { data, error } = await supabase

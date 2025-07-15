@@ -28,15 +28,18 @@ export default function ProfileScreen() {
   if (!user) {
     return (
       <LinearGradient colors={['#F5E6D3', '#E8D5C4']} style={styles.container}>
-        <View style={styles.authPrompt}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Profile</Text>
+        </View>
+        <View style={styles.emptyContainer}>
           <User size={64} color="#8B7355" strokeWidth={1} />
-          <Text style={styles.authTitle}>Welcome to StyleHub</Text>
-          <Text style={styles.authSubtitle}>Sign in to access your profile and orders</Text>
+          <Text style={styles.emptyTitle}>Welcome to StyleHub</Text>
+          <Text style={styles.emptySubtitle}>Sign in to access your profile and orders</Text>
           <TouchableOpacity
-            style={styles.authButton}
+            style={styles.emptyButton}
             onPress={() => router.push('/auth')}
           >
-            <Text style={styles.authButtonText}>Sign In</Text>
+            <Text style={styles.emptyButtonText}>Sign In</Text>
           </TouchableOpacity>
         </View>
       </LinearGradient>
@@ -271,32 +274,32 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#FF6B47',
   },
-  authPrompt: {
+  emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 40,
   },
-  authTitle: {
+  emptyTitle: {
     fontSize: 32,
     fontWeight: 'bold',
     color: '#2D1B16',
     marginBottom: 8,
     marginTop: 20,
   },
-  authSubtitle: {
+  emptySubtitle: {
     fontSize: 16,
     color: '#8B7355',
     marginBottom: 32,
     textAlign: 'center',
   },
-  authButton: {
+  emptyButton: {
     backgroundColor: '#2D1B16',
     paddingHorizontal: 32,
     paddingVertical: 16,
     borderRadius: 25,
   },
-  authButtonText: {
+  emptyButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
