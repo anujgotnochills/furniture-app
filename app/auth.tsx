@@ -9,6 +9,7 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
@@ -58,6 +59,7 @@ export default function AuthScreen() {
     }
 
     setAuthLoading(true);
+    
     try {
       const { error } = isSignUp 
         ? await signUp(email, password)
@@ -66,13 +68,17 @@ export default function AuthScreen() {
       if (error) {
         let errorMessage = error.message;
         
-        // Provide user-friendly error messages
-        if (error.message.includes('Invalid login credentials')) {
+        // Handle common Supabase errors
+        if (error.message?.includes('Invalid login credentials')) {
           errorMessage = 'Invalid email or password. Please try again.';
-        } else if (error.message.includes('User already registered')) {
+        } else if (error.message?.includes('User already registered')) {
           errorMessage = 'An account with this email already exists. Please sign in instead.';
-        } else if (error.message.includes('Email not confirmed')) {
+        } else if (error.message?.includes('Email not confirmed')) {
           errorMessage = 'Please check your email and confirm your account before signing in.';
+        } else if (error.message?.includes('Too many requests')) {
+          errorMessage = 'Too many attempts. Please wait a moment and try again.';
+        } else if (error.message?.includes('signup is disabled')) {
+          errorMessage = 'Account creation is currently disabled. Please contact support.';
         }
         
         Alert.alert('Authentication Error', errorMessage);
@@ -87,8 +93,9 @@ export default function AuthScreen() {
           router.replace('/(tabs)');
         }
       }
-    } catch (error) {
-      Alert.alert('Error', 'Something went wrong');
+    } catch (error: any) {
+      console.error('Auth error:', error);
+      Alert.alert('Error', 'Something went wrong. Please try again.');
     } finally {
       setAuthLoading(false);
     }
@@ -110,7 +117,11 @@ export default function AuthScreen() {
       const { error } = await resetPassword(email);
       
       if (error) {
-        Alert.alert('Error', error.message);
+        let errorMessage = error.message;
+        if (error.message?.includes('Too many requests')) {
+          errorMessage = 'Too many reset attempts. Please wait a moment and try again.';
+        }
+        Alert.alert('Error', errorMessage);
       } else {
         Alert.alert(
           'Reset Email Sent',
@@ -119,7 +130,7 @@ export default function AuthScreen() {
         );
       }
     } catch (error) {
-      Alert.alert('Error', 'Something went wrong');
+      Alert.alert('Error', 'Something went wrong. Please try again.');
     } finally {
       setAuthLoading(false);
     }
@@ -145,164 +156,166 @@ export default function AuthScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
         style={styles.keyboardView}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <ArrowLeft size={20} color="#2D1B16" strokeWidth={2} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Form */}
-        <View style={styles.formContainer}>
-          <BlurView intensity={60} style={styles.formCard}>
-            <Text style={styles.title}>
-              {isResetPassword 
-                ? 'Reset Password' 
-                : isSignUp 
-                ? 'Create Account' 
-                : 'Welcome Back'
-              }
-            </Text>
-            <Text style={styles.subtitle}>
-              {isResetPassword
-                ? 'Enter your email to receive reset instructions'
-                : isSignUp 
-                ? 'Sign up to start shopping for amazing fashion' 
-                : 'Sign in to your StyleHub account'
-              }
-            </Text>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Email</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your email"
-                placeholderTextColor="#8B7355"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoComplete="email"
-                editable={!authLoading}
-              />
-            </View>
-
-            {!isResetPassword && (
-              <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Password</Text>
-                <View style={styles.passwordContainer}>
-                  <TextInput
-                    style={styles.passwordInput}
-                    placeholder="Enter your password"
-                    placeholderTextColor="#8B7355"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    autoComplete="password"
-                    editable={!authLoading}
-                  />
-                  <TouchableOpacity
-                    style={styles.eyeButton}
-                    onPress={() => setShowPassword(!showPassword)}
-                    disabled={authLoading}
-                  >
-                    {showPassword ? (
-                      <EyeOff size={20} color="#8B7355" strokeWidth={2} />
-                    ) : (
-                      <Eye size={20} color="#8B7355" strokeWidth={2} />
-                    )}
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
-
-            {isSignUp && (
-              <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Confirm Password</Text>
-                <View style={styles.passwordContainer}>
-                  <TextInput
-                    style={styles.passwordInput}
-                    placeholder="Confirm your password"
-                    placeholderTextColor="#8B7355"
-                    value={confirmPassword}
-                    onChangeText={setConfirmPassword}
-                    secureTextEntry={!showConfirmPassword}
-                    autoComplete="password"
-                    editable={!authLoading}
-                  />
-                  <TouchableOpacity
-                    style={styles.eyeButton}
-                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                    disabled={authLoading}
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff size={20} color="#8B7355" strokeWidth={2} />
-                    ) : (
-                      <Eye size={20} color="#8B7355" strokeWidth={2} />
-                    )}
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
-
-            <TouchableOpacity
-              style={[styles.authButton, (authLoading || loading) && styles.authButtonDisabled]}
-              onPress={isResetPassword ? handleResetPassword : handleAuth}
-              disabled={authLoading || loading}
-            >
-              {(authLoading || loading) ? (
-                <ActivityIndicator color="#FFFFFF" size="small" />
-              ) : (
-                <Text style={styles.authButtonText}>
-                  {isResetPassword 
-                    ? 'Send Reset Email' 
-                    : isSignUp 
-                    ? 'Sign Up' 
-                    : 'Sign In'
-                  }
-                </Text>
-              )}
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+              <ArrowLeft size={20} color="#2D1B16" strokeWidth={2} />
             </TouchableOpacity>
+          </View>
 
-            {!isResetPassword && (
-              <>
-                <TouchableOpacity 
-                  style={styles.forgotPasswordButton}
-                  onPress={() => switchMode('reset')}
-                  disabled={authLoading || loading}
-                >
-                  <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-                </TouchableOpacity>
+          {/* Form */}
+          <View style={styles.formContainer}>
+            <BlurView intensity={60} style={styles.formCard}>
+              <Text style={styles.title}>
+                {isResetPassword 
+                  ? 'Reset Password' 
+                  : isSignUp 
+                  ? 'Create Account' 
+                  : 'Welcome Back'
+                }
+              </Text>
+              <Text style={styles.subtitle}>
+                {isResetPassword
+                  ? 'Enter your email to receive reset instructions'
+                  : isSignUp 
+                  ? 'Sign up to start shopping for amazing fashion' 
+                  : 'Sign in to your StyleHub account'
+                }
+              </Text>
 
-                <View style={styles.switchContainer}>
-                  <Text style={styles.switchText}>
-                    {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Email</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your email"
+                  placeholderTextColor="#8B7355"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  editable={!authLoading && !loading}
+                />
+              </View>
+
+              {!isResetPassword && (
+                <View style={styles.inputContainer}>
+                  <Text style={styles.inputLabel}>Password</Text>
+                  <View style={styles.passwordContainer}>
+                    <TextInput
+                      style={styles.passwordInput}
+                      placeholder="Enter your password"
+                      placeholderTextColor="#8B7355"
+                      value={password}
+                      onChangeText={setPassword}
+                      secureTextEntry={!showPassword}
+                      autoComplete="password"
+                      editable={!authLoading && !loading}
+                    />
+                    <TouchableOpacity
+                      style={styles.eyeButton}
+                      onPress={() => setShowPassword(!showPassword)}
+                      disabled={authLoading || loading}
+                    >
+                      {showPassword ? (
+                        <EyeOff size={20} color="#8B7355" strokeWidth={2} />
+                      ) : (
+                        <Eye size={20} color="#8B7355" strokeWidth={2} />
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+
+              {isSignUp && (
+                <View style={styles.inputContainer}>
+                  <Text style={styles.inputLabel}>Confirm Password</Text>
+                  <View style={styles.passwordContainer}>
+                    <TextInput
+                      style={styles.passwordInput}
+                      placeholder="Confirm your password"
+                      placeholderTextColor="#8B7355"
+                      value={confirmPassword}
+                      onChangeText={setConfirmPassword}
+                      secureTextEntry={!showConfirmPassword}
+                      autoComplete="password"
+                      editable={!authLoading && !loading}
+                    />
+                    <TouchableOpacity
+                      style={styles.eyeButton}
+                      onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                      disabled={authLoading || loading}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff size={20} color="#8B7355" strokeWidth={2} />
+                      ) : (
+                        <Eye size={20} color="#8B7355" strokeWidth={2} />
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+
+              <TouchableOpacity
+                style={[styles.authButton, (authLoading || loading) && styles.authButtonDisabled]}
+                onPress={isResetPassword ? handleResetPassword : handleAuth}
+                disabled={authLoading || loading}
+              >
+                {(authLoading || loading) ? (
+                  <ActivityIndicator color="#FFFFFF" size="small" />
+                ) : (
+                  <Text style={styles.authButtonText}>
+                    {isResetPassword 
+                      ? 'Send Reset Email' 
+                      : isSignUp 
+                      ? 'Sign Up' 
+                      : 'Sign In'
+                    }
                   </Text>
+                )}
+              </TouchableOpacity>
+
+              {!isResetPassword && (
+                <>
                   <TouchableOpacity 
-                    onPress={() => switchMode(isSignUp ? 'signin' : 'signup')}
+                    style={styles.forgotPasswordButton}
+                    onPress={() => switchMode('reset')}
                     disabled={authLoading || loading}
                   >
-                    <Text style={styles.switchButton}>
-                      {isSignUp ? 'Sign In' : 'Sign Up'}
+                    <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                  </TouchableOpacity>
+
+                  <View style={styles.switchContainer}>
+                    <Text style={styles.switchText}>
+                      {isSignUp ? 'Already have an account?' : "Don't have an account?"}
                     </Text>
+                    <TouchableOpacity 
+                      onPress={() => switchMode(isSignUp ? 'signin' : 'signup')}
+                      disabled={authLoading || loading}
+                    >
+                      <Text style={styles.switchButton}>
+                        {isSignUp ? 'Sign In' : 'Sign Up'}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              )}
+
+              {isResetPassword && (
+                <View style={styles.switchContainer}>
+                  <Text style={styles.switchText}>Remember your password?</Text>
+                  <TouchableOpacity 
+                    onPress={() => switchMode('signin')}
+                    disabled={authLoading || loading}
+                  >
+                    <Text style={styles.switchButton}>Sign In</Text>
                   </TouchableOpacity>
                 </View>
-              </>
-            )}
-
-            {isResetPassword && (
-              <View style={styles.switchContainer}>
-                <Text style={styles.switchText}>Remember your password?</Text>
-                <TouchableOpacity 
-                  onPress={() => switchMode('signin')}
-                  disabled={authLoading || loading}
-                >
-                  <Text style={styles.switchButton}>Sign In</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </BlurView>
-        </View>
+              )}
+            </BlurView>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </LinearGradient>
   );
@@ -314,6 +327,9 @@ const styles = StyleSheet.create({
   },
   keyboardView: {
     flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
   header: {
     paddingHorizontal: 20,
@@ -332,6 +348,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
+    paddingBottom: 40,
   },
   formCard: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',

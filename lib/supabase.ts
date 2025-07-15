@@ -5,5 +5,21 @@ import { Database } from '@/types/database';
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 
-// Export the Supabase client
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables');
+}
+
+// Export the Supabase client with proper configuration
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: false,
+    flowType: 'pkce'
+  },
+  global: {
+    headers: {
+      'X-Client-Info': 'stylehub-app'
+    }
+  }
+});

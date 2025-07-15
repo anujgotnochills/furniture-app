@@ -23,21 +23,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     isMountedRef.current = true;
     
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (isMountedRef.current) {
-        setUser(session?.user ?? null);
-        setSession(session);
-        setLoading(false);
+    // Get initial session
+    const getInitialSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Error getting session:', error);
+        }
+        
+        if (isMountedRef.current) {
+          setUser(session?.user ?? null);
+          setSession(session);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error in getInitialSession:', error);
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
       }
-    });
+    };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (isMountedRef.current) {
-        setUser(session?.user ?? null);
-        setSession(session);
-        setLoading(false);
+    getInitialSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
+        
+        if (isMountedRef.current) {
+          setUser(session?.user ?? null);
+          setSession(session);
+          setLoading(false);
+        }
       }
-    });
+    );
 
     return () => {
       isMountedRef.current = false;
@@ -46,46 +66,105 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    if (isMountedRef.current) {
-      setLoading(true);
+    try {
+      if (isMountedRef.current) {
+        setLoading(true);
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
+      if (error) {
+        console.error('Sign in error:', error);
+        return { error };
+      }
+
+      console.log('Sign in successful:', data.user?.email);
+      return { error: null };
+    } catch (error) {
+      console.error('Sign in exception:', error);
+      return { error };
+    } finally {
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (isMountedRef.current) {
-      setLoading(false);
-    }
-    return { error };
   };
 
   const signUp = async (email: string, password: string) => {
-    if (isMountedRef.current) {
-      setLoading(true);
+    try {
+      if (isMountedRef.current) {
+        setLoading(true);
+      }
+
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: {
+          emailRedirectTo: undefined, // Disable email confirmation for now
+        }
+      });
+
+      if (error) {
+        console.error('Sign up error:', error);
+        return { error };
+      }
+
+      console.log('Sign up successful:', data.user?.email);
+      return { error: null };
+    } catch (error) {
+      console.error('Sign up exception:', error);
+      return { error };
+    } finally {
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    if (isMountedRef.current) {
-      setLoading(false);
-    }
-    return { error };
   };
 
   const signOut = async () => {
-    if (isMountedRef.current) {
-      setLoading(true);
-    }
-    await supabase.auth.signOut();
-    if (isMountedRef.current) {
-      setLoading(false);
+    try {
+      if (isMountedRef.current) {
+        setLoading(true);
+      }
+
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('Sign out error:', error);
+      } else {
+        console.log('Sign out successful');
+      }
+    } catch (error) {
+      console.error('Sign out exception:', error);
+    } finally {
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
   };
 
   const resetPassword = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
-    return { error };
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(
+        email.trim().toLowerCase(),
+        {
+          redirectTo: undefined, // Handle password reset in-app
+        }
+      );
+
+      if (error) {
+        console.error('Password reset error:', error);
+        return { error };
+      }
+
+      return { error: null };
+    } catch (error) {
+      console.error('Password reset exception:', error);
+      return { error };
+    }
   };
 
   return (
